@@ -1,0 +1,17 @@
+from flask import Blueprint, render_template
+
+main_bp = Blueprint('main', __name__)
+
+
+@main_bp.route('/')
+def dashboard():
+    return render_template('main/dashboard.html')
+
+
+@main_bp.route('/profile')
+def profile():
+    return render_template('main/profile.html')
+
+
+
+
