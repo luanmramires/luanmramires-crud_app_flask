@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+venv_crud_finance/
 build/
 develop-eggs/
 dist/
@@ -110,6 +111,12 @@ ENV/
 env.bak/
 venv.bak/
 
+# Ambientes virtuais específicos do projeto
+venv_crud_finance/
+venv_finance/
+env_finance/
+.venv_finance/
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -132,13 +139,36 @@ dmypy.json
 *.db
 *.sqlite
 *.sqlite3
+finance.db
+finance.db-journal
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-project
+*.sublime-workspace
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# Backup files
+*.bak
+*.backup
+
+# Configurações locais
+config_local.py
+.env.local
+.env.production 
