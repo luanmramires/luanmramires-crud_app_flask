@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Gestão Financeira{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <a href="{{ url_for('finance.add_income') }}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-plus-circle me-1"></i>Nova Receita
+            </a>
+            <a href="{{ url_for('finance.add_expense') }}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-dash-circle me-1"></i>Nova Despesa
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtro de Mês -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="GET" action="{{ url_for('main.dashboard') }}" class="d-flex align-items-center">
+            <label for="month" class="form-label me-2 mb-0">Filtrar por mês:</label>
+            <select name="month" id="month" class="form-select me-2" style="width: auto;">
+                <option value="1" {% if selected_month == 1 %}selected{% endif %}>Janeiro</option>
+                <option value="2" {% if selected_month == 2 %}selected{% endif %}>Fevereiro</option>
+                <option value="3" {% if selected_month == 3 %}selected{% endif %}>Março</option>
+                <option value="4" {% if selected_month == 4 %}selected{% endif %}>Abril</option>
+                <option value="5" {% if selected_month == 5 %}selected{% endif %}>Maio</option>
+                <option value="6" {% if selected_month == 6 %}selected{% endif %}>Junho</option>
+                <option value="7" {% if selected_month == 7 %}selected{% endif %}>Julho</option>
+                <option value="8" {% if selected_month == 8 %}selected{% endif %}>Agosto</option>
+                <option value="9" {% if selected_month == 9 %}selected{% endif %}>Setembro</option>
+                <option value="10" {% if selected_month == 10 %}selected{% endif %}>Outubro</option>
+                <option value="11" {% if selected_month == 11 %}selected{% endif %}>Novembro</option>
+                <option value="12" {% if selected_month == 12 %}selected{% endif %}>Dezembro</option>
+            </select>
+            <select name="year" id="year" class="form-select me-2" style="width: auto;">
+                {% for year in range(2020, 2031) %}
+                <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-funnel me-1"></i>Filtrar
+            </button>
+        </form>
+    </div>
+    <div class="col-md-6 text-end">
+        <span class="text-muted">
+            <i class="bi bi-calendar3 me-1"></i>
+            Período: {{ selected_month_name }} de {{ selected_year }}
+        </span>
+    </div>
+</div>
+
+<!-- Cards de Resumo -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-success">Receitas do Mês</h6>
+                        <h3 class="mb-0">R$ {{ "%.2f"|format(total_income) }}</h3>
+                    </div>
+                    <div class="text-success">
+                        <i class="bi bi-plus-circle" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card border-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-danger">Despesas do Mês</h6>
+                        <h3 class="mb-0">R$ {{ "%.2f"|format(total_expense) }}</h3>
+                    </div>
+                    <div class="text-danger">
+                        <i class="bi bi-dash-circle" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card {% if balance >= 0 %}border-primary{% else %}border-warning{% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title {% if balance >= 0 %}text-primary{% else %}text-warning{% endif %}">Saldo do Mês</h6>
+                        <h3 class="mb-0 {% if balance >= 0 %}text-primary{% else %}text-warning{% endif %}">
+                            R$ {{ "%.2f"|format(balance) }}
+                        </h3>
+                    </div>
+                    <div class="{% if balance >= 0 %}text-primary{% else %}text-warning{% endif %}">
+                        <i class="bi bi-wallet2" style="font-size: 2rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico e Transações Recentes -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resumo Financeiro</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="financeChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Transações Recentes</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_transactions %}
+                    <div class="list-group list-group-flush">
+                        {% for transaction in recent_transactions %}
+                        <div class="list-group-item border-0 px-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ transaction.description }}</h6>
+                                    <small class="text-muted">{{ transaction.category }} • {{ transaction.date.strftime('%d/%m/%Y') }}</small>
+                                </div>
+                                <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if transaction.type == 'income' %}+{% else %}-{% endif %}R$ {{ "%.2f"|format(transaction.amount) }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhuma transação encontrada</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Gráfico de pizza para receitas vs despesas
+const ctx = document.getElementById('financeChart').getContext('2d');
+const financeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Receitas', 'Despesas'],
+        datasets: [{
+            data: [{{ total_income }}, {{ total_expense }}],
+            backgroundColor: [
+                '#28a745',
+                '#dc3545'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 

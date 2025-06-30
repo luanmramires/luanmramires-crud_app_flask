@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil - Gestão Financeira{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Meu Perfil</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Informações da Conta</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Nome de Usuário:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ current_user.username }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Email:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ current_user.email }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-3">
+                        <strong>Membro desde:</strong>
+                    </div>
+                    <div class="col-sm-9">
+                        {{ current_user.created_at.strftime('%d/%m/%Y') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Estatísticas</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" disabled>
+                        <i class="bi bi-gear me-2"></i>Configurações
+                    </button>
+                    <button class="btn btn-outline-secondary" disabled>
+                        <i class="bi bi-shield-check me-2"></i>Segurança
+                    </button>
+                    <button class="btn btn-outline-info" disabled>
+                        <i class="bi bi-download me-2"></i>Exportar Dados
+                    </button>
+                </div>
+                
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Funcionalidades em desenvolvimento
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
