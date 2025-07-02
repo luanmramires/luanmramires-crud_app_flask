@@ -2,8 +2,13 @@ from flask import Flask
 import os
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 db = SQLAlchemy()
+login_manager = LoginManager()
+
+
+
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -25,12 +30,26 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(instance_dir, 'finance.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
     # Inicializar o banco de dados
     db.init_app(app)
 
     # criar todas as tabelas
     with app.app_context():
         db.create_all()
+
+    # Configurar Flask-Login
+    login_manager.init_app(app)
+    # Configurar a view de login
+    login_manager.login_view = 'auth.login'
+    # Configurar a mensagem de login
+    login_manager.login_message = 'Por favor, faça login para acessar esta página.'
+    # Configurar o carregador de usuário
+    from app.models import User
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
 
     # registrar blueprints
     from app.main import main_bp
