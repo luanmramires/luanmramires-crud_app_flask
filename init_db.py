@@ -7,8 +7,8 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 Script para inicializar o banco de dados com categorias padrão
 """
 
-from app import create_app, db
-from app.models import User, Category, Income, Expense
+from app import create_app
+from app.models import User, Category, Income, Expense, db
 from datetime import datetime, timedelta
 from decimal import Decimal
 

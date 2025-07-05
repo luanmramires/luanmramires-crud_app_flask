@@ -25,12 +25,12 @@ class IncomeForm(FlaskForm):
 
 class ExpenseForm(FlaskForm):
     description = StringField('Descrição', validators=[DataRequired(), Length(max=200)])
-    amount = DecimalField('Valor', validators=[NumberRange(min=0.01)])
+    amount = DecimalField('Valor', validators=[DataRequired(), NumberRange(min=0.01)])
     date = DateField('Data', validators=[DataRequired()])
-    category_id =  SelectField('Categoria', coerce=int ,validators=[DataRequired])
+    category_id = SelectField('Categoria', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Registrar')
 class CategoryForm(FlaskForm):
     name = StringField('Nome', validators=[DataRequired()])
-    type = StringField('Tipo', choices=[('income', 'Receita'), ('expense', 'Despesa')] ,validators=[DataRequired()])
+    type = SelectField('Tipo', choices=[('income', 'Receita'), ('expense', 'Despesa')], validators=[DataRequired()])
     color = StringField('Color (hex)', validators=[DataRequired()])
     submit = SubmitField('Registrar')

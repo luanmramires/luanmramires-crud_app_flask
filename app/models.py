@@ -1,9 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from datetime import datetime
-from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
+db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,5 +61,5 @@ class Category(db.Model):
     # Relacionamentos
     incomes = db.relationship('Income', backref='category', lazy=True)
     expenses = db.relationship('Expense', backref='category', lazy=True)
-
+    
     

@@ -1,21 +1,15 @@
 from flask import Flask
 import os
 from dotenv import load_dotenv
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from app.models import db
 
-db = SQLAlchemy()
 login_manager = LoginManager()
-
-
-
 
 # Carregar variáveis de ambiente
 load_dotenv()
 
 def create_app():
-
-
     # Obter o caminho absoluto para a pasta templates
     template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates'))
     app = Flask(__name__, template_folder=template_dir)
@@ -29,7 +23,6 @@ def create_app():
     instance_dir = os.path.abspath(os.path.join(basedir, '..', 'instance'))
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(instance_dir, 'finance.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 
     # Inicializar o banco de dados
     db.init_app(app)
@@ -49,7 +42,6 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-
 
     # registrar blueprints
     from app.main import main_bp
